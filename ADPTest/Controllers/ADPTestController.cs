@@ -18,13 +18,13 @@ namespace ADPTest.Controllers
 
 		private readonly ILogger<ADPTesController> _logger;
 		private readonly IADPApiService apiService;
-		private readonly TaskService taskService;
+		private readonly ITaskService _taskService;
 
-		public ADPTesController(ILogger<ADPTesController> logger, IADPApiService adpApiService)
+		public ADPTesController(ILogger<ADPTesController> logger, IADPApiService adpApiService, ITaskService taskService)
 		{
 			_logger = logger;
 			apiService = adpApiService;
-			taskService = new TaskService();
+			_taskService = taskService;
 		}
 
 		[HttpGet("getTaskFromApi")]
@@ -46,7 +46,7 @@ namespace ADPTest.Controllers
 		{
 			try
 			{
-				var resultTask = taskService.ExecuteTask(incomingTask);
+				var resultTask = _taskService.ExecuteTask(incomingTask);
 				return await apiService.SubmitTaskToADPService(resultTask);
 			}
 			catch (Exception ex)
