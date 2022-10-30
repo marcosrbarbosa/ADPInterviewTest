@@ -35,41 +35,31 @@ namespace ADPTest.Services
 
 		private ResultTask Add(IncomingTask incomingTask)
 		{
-			var resultTask = new ResultTask(incomingTask.Id);
-			resultTask.Result = incomingTask.Left + incomingTask.Right;
-			return resultTask;
+			return new ResultTask(incomingTask.Id, incomingTask.Left + incomingTask.Right);
 		}
 
 		private ResultTask Substract(IncomingTask incomingTask)
 		{
-			var resultTask = new ResultTask(incomingTask.Id);
-			resultTask.Result = incomingTask.Left - incomingTask.Right;
-			return resultTask;
+			return new ResultTask(incomingTask.Id, incomingTask.Left - incomingTask.Right);
 		}
 
 		private ResultTask Multiply(IncomingTask incomingTask)
 		{
-			var resultTask = new ResultTask(incomingTask.Id);
-			resultTask.Result = Convert.ToInt64(incomingTask.Left * incomingTask.Right);
-			return resultTask;
+			return new ResultTask(incomingTask.Id, incomingTask.Left * incomingTask.Right);
 		}
 
 		private ResultTask Divide(IncomingTask incomingTask)
 		{
 			if (incomingTask.Left == 0)
 			{
-				throw new Exception($"Left argument for task Id {incomingTask.Id} cannot be 0");
+				throw new Exception($"Left argument for task Id {incomingTask.Id} can't be 0");
 			}
-			var resultTask = new ResultTask(incomingTask.Id);
-			resultTask.Result = incomingTask.Left / incomingTask.Right;
-			return resultTask;
+			return new ResultTask(incomingTask.Id, incomingTask.Left / incomingTask.Right);
 		}
 
 		private ResultTask Remainder(IncomingTask incomingTask)
 		{
-			var resultTask = new ResultTask(incomingTask.Id);
-			resultTask.Result = incomingTask.Left % incomingTask.Right;
-			return resultTask;
+			return new ResultTask(incomingTask.Id, incomingTask.Left % incomingTask.Right);
 		}
 
 

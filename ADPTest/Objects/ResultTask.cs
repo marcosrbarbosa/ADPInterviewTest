@@ -18,6 +18,12 @@ namespace ADPTest.Objects
 		{
 			this.Id = taskId;
 		}
+
+		public ResultTask(string taskId, long taskResult)
+		{
+			this.Id = taskId;
+			this.Result = taskResult;
+		}
 		public long Result { get; set; }
 	}
 }
