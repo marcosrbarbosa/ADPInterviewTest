@@ -12,8 +12,6 @@ namespace ADPTest.Services
 	{
 		public TaskService(){ }
 
-		private bool disposedValue;
-
 		public ResultTask ExecuteTask(IncomingTask incomingTask)
 		{
 			switch (incomingTask.Operation)
