@@ -27,34 +27,6 @@ namespace ADPTest.Controllers
 			_taskService = taskService;
 		}
 
-		[HttpGet("getTaskFromApi")]
-		public async Task<ActionResult<IncomingTask>> GetTask()
-		{
-			try
-			{
-				var incomingTask = await apiService.GetTaskFromADPService();
-				return Ok(incomingTask);
-			}
-			catch (Exception ex)
-			{
-				return BadRequest($"The server was unable to handle your request\n Exception Message: {ex.Message}");
-			}
-		}
-
-		[HttpPost("submitTaskToApi")]
-		public async Task<ContentResult> SubmitTask([FromBody] IncomingTask incomingTask)
-		{
-			try
-			{
-				var resultTask = _taskService.ExecuteTask(incomingTask);
-				return await apiService.SubmitTaskToADPService(resultTask);
-			}
-			catch (Exception ex)
-			{
-				return BadRequestMessage(ex);
-			}
-		}
-
 		[HttpGet("executeTasksFromApi")]
 		public async Task<ContentResult> ExecuteTasks()
 		{

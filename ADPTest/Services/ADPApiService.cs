@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using System.Net;
+using System.Text;
 
 namespace ADPTest.Services
 {
@@ -39,12 +40,11 @@ namespace ADPTest.Services
 			}
 		}
 
-		public async Task<ContentResult> SubmitTaskToADPService(ResultTask resultTask)
+		public async Task<HttpResponseMessage> SubmitTaskToADPService(ResultTask resultTask)
 		{
 			try
 			{
-				var taskResponse = await _httpClient.PostAsJsonAsync(_configuration.GetValue<string>("SubmitTaskEndPoint"), resultTask);
-				return TranslateResponseMessage(taskResponse);
+				return await _httpClient.PostAsJsonAsync<ResultTask>(_configuration.GetValue<string>("SubmitTaskEndPoint"), resultTask);
 			}
 			catch (Exception ex)
 			{
@@ -58,7 +58,8 @@ namespace ADPTest.Services
 			{
 				var taskToExecute = await GetTaskFromADPService();
 				var taskResult = _taskService.ExecuteTask(taskToExecute);
-				return await SubmitTaskToADPService(taskResult);
+				var response = await SubmitTaskToADPService(taskResult);
+				return TranslateResponseMessage(response, taskToExecute, taskResult);
 			}
 			catch (Exception ex)
 			{
@@ -66,29 +67,50 @@ namespace ADPTest.Services
 			}
 		}
 
-		private ContentResult TranslateResponseMessage(HttpResponseMessage receivedMessage)
+		private ContentResult TranslateResponseMessage(HttpResponseMessage receivedMessage, IncomingTask taskToExecute, ResultTask taskResult)
 		{
 			ContentResult contentResult = new ContentResult();
-			contentResult.StatusCode = (int)receivedMessage.StatusCode;
 			contentResult.ContentType = "text/plain";
+
+			StringBuilder sb = new StringBuilder();
+
+			if (taskToExecute != null)
+			{
+				sb.AppendLine("Received task:");
+				sb.AppendLine(JsonConvert.SerializeObject(taskToExecute));
+				sb.AppendLine();
+			}
+
+			if(taskResult != null)
+			{
+				sb.AppendLine("Task Result:");
+				sb.AppendLine(JsonConvert.SerializeObject(taskResult));
+				sb.AppendLine();
+			}
+
+			sb.AppendLine("Return message:");
+
 			switch (receivedMessage.StatusCode)
 			{ 
 				case HttpStatusCode.OK:
-					contentResult.Content = receivedMessage.ReasonPhrase;
+					sb.AppendLine($"{receivedMessage.StatusCode} - Success");
 					break;
 				case HttpStatusCode.BadRequest:
-					contentResult.Content = "Incorrect value in result; No ID specified; Value is invalid";
+					sb.AppendLine($"{receivedMessage.StatusCode} - Incorrect value in result; No ID specified; Value is invalid");
 					break;
 				case HttpStatusCode.NotFound:
-					contentResult.Content = "Value not found for specified ID";
+					sb.AppendLine($"{receivedMessage.StatusCode} - Value not found for specified ID");
 					break;
 				case HttpStatusCode.ServiceUnavailable:
-					contentResult.Content = "Error communicating with database";
+					sb.AppendLine($"{receivedMessage.StatusCode} - Error communicating with database");
 					break;
 				default:
-					contentResult.Content = receivedMessage.ReasonPhrase;
+					sb.AppendLine($"{receivedMessage.StatusCode} - {receivedMessage.ReasonPhrase}");
 					break;
 			}
+
+			contentResult.Content = sb.ToString();
+
 			return contentResult;
 		}
 

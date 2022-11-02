@@ -8,8 +8,8 @@ namespace ADPTest.Objects
 	public class IncomingTask : ADPTask
 	{
 		public string Operation { get; set; }
-		public long Left { get; set; }
-		public long Right { get; set; }
+		public double Left { get; set; }
+		public double Right { get; set; }
 
 	}
 

@@ -10,7 +10,7 @@ namespace ADPTest.Services
 {
 	public class TaskService : ITaskService
 	{
-		public TaskService(){ }
+		public TaskService() { }
 
 		public ResultTask ExecuteTask(IncomingTask incomingTask)
 		{
@@ -50,16 +50,17 @@ namespace ADPTest.Services
 		{
 			if (incomingTask.Left == 0)
 			{
-				throw new Exception($"Left argument for task Id {incomingTask.Id} can't be 0");
+				throw new Exception($"Left value cannot be 0.");
 			}
+
 			return new ResultTask(incomingTask.Id, incomingTask.Left / incomingTask.Right);
+
 		}
 
 		private ResultTask Remainder(IncomingTask incomingTask)
 		{
 			return new ResultTask(incomingTask.Id, incomingTask.Left % incomingTask.Right);
 		}
-
 
 	}
 }

@@ -8,7 +8,7 @@ namespace ADPTest.Interfaces
 	public interface IADPApiService
 	{
 		Task<IncomingTask> GetTaskFromADPService();
-		Task<ContentResult> SubmitTaskToADPService(ResultTask resultTask);
+		Task<HttpResponseMessage> SubmitTaskToADPService(ResultTask resultTask);
 		Task<ContentResult> ExecuteTasks();
 	}
 }

@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using System;
 using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace ADPApiUnitTests
@@ -118,9 +119,9 @@ namespace ADPApiUnitTests
 						Assert.Fail("Task service does not returned a Result for the task");
 					}
 
-					Task<ContentResult> postMethodResponse = apiService.SubmitTaskToADPService(resultTask);
+					Task<HttpResponseMessage> postMethodResponse = apiService.SubmitTaskToADPService(resultTask);
 
-					Assert.IsTrue(postMethodResponse.Result != null);
+					Assert.IsTrue(postMethodResponse.Result.IsSuccessStatusCode);
 
 				}
 
